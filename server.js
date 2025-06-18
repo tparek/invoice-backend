@@ -114,6 +114,17 @@ app.get('/invoices/:id', (req, res) => {
   });
 });
 
+// TEMPORARY: Delete all invoices endpoint
+app.delete('/clear-invoices', (req, res) => {
+  db.run('DELETE FROM invoices', [], function(err) {
+    if (err) {
+      res.status(500).send({ error: err.message });
+    } else {
+      res.send({ message: 'All invoices deleted.' });
+    }
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 }); 
