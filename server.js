@@ -114,6 +114,56 @@ app.get('/invoices/:id', (req, res) => {
   });
 });
 
+// PUT /invoices/:id - update an existing invoice
+app.put('/invoices/:id', (req, res) => {
+  const {
+    date,
+    payment_term,
+    client_company_name,
+    client_address,
+    client_reg_nr,
+    client_kmkr_nr,
+    services,
+    subtotal,
+    vat,
+    total
+  } = req.body;
+  db.run(
+    `UPDATE invoices SET
+      date = ?,
+      payment_term = ?,
+      client_company_name = ?,
+      client_address = ?,
+      client_reg_nr = ?,
+      client_kmkr_nr = ?,
+      services = ?,
+      subtotal = ?,
+      vat = ?,
+      total = ?
+    WHERE id = ?`,
+    [
+      date,
+      payment_term,
+      client_company_name,
+      client_address,
+      client_reg_nr,
+      client_kmkr_nr,
+      JSON.stringify(services),
+      subtotal,
+      vat,
+      total,
+      req.params.id
+    ],
+    function (err) {
+      if (err) {
+        res.status(500).json({ error: err.message });
+      } else {
+        res.json({ message: 'Invoice updated.' });
+      }
+    }
+  );
+});
+
 // TEMPORARY: Delete all invoices endpoint
 app.delete('/clear-invoices', (req, res) => {
   db.run('DELETE FROM invoices', [], function(err) {
